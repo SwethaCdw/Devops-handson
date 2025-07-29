@@ -27,7 +27,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-        run: node -v
+      - run: node -v
       - run: echo "Running Node ${{ matrix.node }} on ${{ matrix.os }}"
       - run: npm ci
       - run: npm run build
@@ -51,7 +51,7 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-        run: |
+      - run: |
           echo "Testing Node App on Node ${{ matrix.node }}"
           npm test
 
