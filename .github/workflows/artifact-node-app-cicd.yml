@@ -52,7 +52,7 @@ jobs:
         with:
           node-version: ${{ matrix.node }}
       - run: |
-          echo "Testing Node App on Node ${{ matrix.node }}"
+          echo "Testing Node App on Node ${{ matrix.node }} version"
           npm test
 
   use-artifact:
