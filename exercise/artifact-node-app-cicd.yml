@@ -1,0 +1,15 @@
+name: Artifact Node App CI/CD
+
+on:
+  push:
+    paths:
+      - "exercise/**"
+    branches: [main, develop]
+  pull_request:
+    paths:
+      - "exercise/**"
+    branches: [main]
+
+env:
+  NODE_VERSION: "18"
+  APP_PATH: "exercise"
