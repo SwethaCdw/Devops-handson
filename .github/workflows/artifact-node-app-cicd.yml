@@ -81,7 +81,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact-node-${{ matrix.node }} #Use the same name as in upload step
-          node-version: ${{ matrix.node }}
+          node-version: 18
           path: dist
 
       - name: Build Docker image
