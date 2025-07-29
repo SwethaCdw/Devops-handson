@@ -3,16 +3,16 @@ name: Artifact Node App CI/CD
 on:
   push:
     paths:
-      - "Devops-handson/assignment-5/**"
+      - "assignment-5/**"
     branches: [main, develop]
   pull_request:
     paths:
-      - "Devops-handson/assigment-5/**"
+      - "assignment-5/**"
     branches: [main]
 
 env:
   NODE_VERSION: "18"
-  APP_PATH: "Devops-handson/assigment-5"
+  APP_PATH: "assignment-5"
 
 jobs:
   build:
