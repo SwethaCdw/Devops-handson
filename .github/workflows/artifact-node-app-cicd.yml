@@ -3,11 +3,11 @@ name: Artifact Node App CI/CD
 on:
   push:
     paths:
-      - "/**"
+      - "**"
     branches: [main, develop]
   pull_request:
     paths:
-      - /**"
+      - "**"
     branches: [main]
 
 env:
