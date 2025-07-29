@@ -69,6 +69,10 @@ jobs:
 
   use-artifact:
     needs: test
+    strategy:
+      matrix:
+        os: [ubuntu-latest]
+        node: 18
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
@@ -77,7 +81,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: artifact-node-${{ matrix.node }} #Use the same name as in upload step
-          node-version: ${{ env.NODE_VERSION }}
+          node-version: ${{ matrix.node }}
           path: dist
 
       - name: Build Docker image
