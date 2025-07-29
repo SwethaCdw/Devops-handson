@@ -22,21 +22,32 @@ jobs:
         node: [16, 18]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: Build Node App
+      - name: Checkout code
         uses: actions/checkout@v3
-      - uses: actions/setup-node@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
         with:
           node-version: ${{ matrix.node }}
-      - run: node -v
-      - run: echo "Running Node ${{ matrix.node }} on ${{ matrix.os }}"
-      - run: npm ci
-      - run: npm run build
+
+      - name: Show Node version
+        run: node -v
+
+      - name: Info
+        run: echo "Running Node ${{ matrix.node }} on ${{ matrix.os }}"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build app
+        run: npm run build
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v4
         with:
-          name: artifact-node-{{ matrix.node }}
+          name: artifact-node-${{ matrix.node }}
           path: dist
+
 
   test:
     needs: build
