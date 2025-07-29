@@ -3,13 +3,113 @@ name: Artifact Node App CI/CD
 on:
   push:
     paths:
-      - "devops-handson/exercise/**"
+      - "Devops-handson/assignment-5/**"
     branches: [main, develop]
   pull_request:
     paths:
-      - "exercise/**"
+      - "Devops-handson/assigment-5/**"
     branches: [main]
 
 env:
   NODE_VERSION: "18"
-  APP_PATH: "exercise"
+  APP_PATH: "Devops-handson/assigment-5"
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [16, 18]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Build Node App
+        uses: actions/checkout@v3
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+        run: node -v
+        run: echo "Running Node ${{ matrix.node }} on ${{ matrix.os }}"
+        run: npm ci
+        run: npm run build
+
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: artifact-node-{{ matrix.node }}
+          path: ${{ env.APP_PATH }}/dist
+
+  test:
+    needs: build
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+        node: [16, 18]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - name: Test Node App
+        with:
+          node-version: ${{ matrix.node }}
+        run: |
+          echo "Testing Node App on Node ${{ matrix.node }}"
+          npm test
+
+  use-artifact:
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Download build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: Build Node App
+          node-version: ${{ env.NODE_VERSION }}
+          path: ${{ env.APP_PATH }}/dist
+
+      - name: Build Docker image
+        working-directory: ${{ env.APP_PATH }}
+        run: |
+          docker build -t node-artifact-demo .
+
+      - name: Log in to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Push Docker image to Docker Hub
+        run: |
+          IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/node-artifact-demo
+          docker tag node-artifact-demo:latest $IMAGE_NAME:latest
+          docker push $IMAGE_NAME:latest
+
+
+  deploy-prod:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    needs: use-artifact
+    environment: production
+    steps:
+      - name: Deploy to Production Server
+        run: |
+          echo "Deploying Node App to Production server..."
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/node-artifact-demo:latest
+          docker run -d -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/node-artifact-demo:latest
+          echo "Node App deployed successfully!"
+          echo "API_URL: ${{ vars.API_URL }}"
+          echo "DB_NAME: ${{ vars.DB_NAME }}"
+
+  deploy-dev:
+    if: github.ref == 'refs/heads/develop'
+    runs-on: ubuntu-latest
+    needs: use-artifact
+    environment: development
+    steps:
+      - name: Deploy to Development Server
+        run: |
+          echo "Deploying Node App to Development server..."
+          docker pull ${{ secrets.DOCKERHUB_USERNAME }}/node-artifact-demo:latest
+          docker run -d -p 80:3000 ${{ secrets.DOCKERHUB_USERNAME }}/node-artifact-demo:latest
+          echo "Node App deployed successfully!"
+          echo "API_URL: ${{ vars.API_URL }}"
+          echo "DB_NAME: ${{ vars.DB_NAME }}"
