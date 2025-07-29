@@ -76,7 +76,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: Build Node App
+          name: artifact-node-${{ matrix.node }} #Use the same name as in upload step
           node-version: ${{ env.NODE_VERSION }}
           path: dist
 
