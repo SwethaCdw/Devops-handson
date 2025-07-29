@@ -1,8 +1,8 @@
 FROM node:18
 
-WORKDIR /assignment-5
+WORKDIR .
 
-COPY package*.json /dist
+COPY package*.json dist
 
 Run npm ci --omit=dev
 
