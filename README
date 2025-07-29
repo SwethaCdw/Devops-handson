@@ -5,3 +5,4 @@ Changes
 added strategy
 startup failure issue
 Artifact node_version removed
+Merge both deploy-prod and deploy-dev into one
