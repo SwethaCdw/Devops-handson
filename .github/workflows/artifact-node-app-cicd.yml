@@ -21,7 +21,7 @@ jobs:
         node: [16, 18]
     runs-on: ${{ matrix.os }}
     steps:
-      - name: artifact-node-{{ matrix.node }}
+      - name: Build Node app
         uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
@@ -54,6 +54,7 @@ jobs:
           echo "Testing Node App on Node ${{ matrix.node }}"
           npm install
           npm test
+
 
   use-artifact:
     needs: test
