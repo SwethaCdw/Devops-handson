@@ -76,8 +76,7 @@ jobs:
       - name: Download build artifact
         uses: actions/download-artifact@v4
         with:
-          name: artifact-node-18 #Use the same name as in upload step
-          node-version: 18
+          name: artifact-node-${{ env.NODE_VERSION }}
           path: dist
 
       - name: Build Docker image
