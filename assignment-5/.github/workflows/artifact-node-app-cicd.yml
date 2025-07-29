@@ -3,7 +3,7 @@ name: Artifact Node App CI/CD
 on:
   push:
     paths:
-      - "exercise/**"
+      - "devops-handson/exercise/**"
     branches: [main, develop]
   pull_request:
     paths:
